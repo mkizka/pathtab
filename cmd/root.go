@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"os"
+	"runtime"
 	"strings"
 )
 
@@ -28,8 +29,12 @@ var rootCmd = &cobra.Command{
 	Short: "Show PATH environment variable",
 	Run: func(cmd *cobra.Command, args []string) {
 		path := os.Getenv("PATH")
-		fmt.Println(strings.Replace(path, ":", "\n", -1))
-	 },
+		splitter := ":"
+		if runtime.GOOS == "windows" {
+			splitter = ";"
+		}
+		fmt.Println(strings.Replace(path, splitter, "\n", -1))
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
