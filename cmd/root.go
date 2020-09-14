@@ -20,20 +20,26 @@ import (
 	"github.com/spf13/cobra"
 	"os"
 	"runtime"
+	"sort"
 	"strings"
 )
+
+var shouldSort bool
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "ppath",
 	Short: "Show PATH environment variable",
 	Run: func(cmd *cobra.Command, args []string) {
-		path := os.Getenv("PATH")
 		splitter := ":"
 		if runtime.GOOS == "windows" {
 			splitter = ";"
 		}
-		fmt.Println(strings.Replace(path, splitter, "\n", -1))
+		paths := strings.Split(os.Getenv("PATH"), splitter)
+		if shouldSort {
+			sort.Strings(paths)
+		}
+		fmt.Println(strings.Join(paths, "\n"))
 	},
 }
 
@@ -44,4 +50,8 @@ func Execute() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+}
+
+func init() {
+	rootCmd.PersistentFlags().BoolVarP(&shouldSort, "sort", "s", false, "sort path")
 }
