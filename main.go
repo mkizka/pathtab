@@ -15,7 +15,7 @@ limitations under the License.
 */
 package main
 
-import "github.com/mkizka/ppath/cmd"
+import "github.com/mkizka/pathtab/cmd"
 
 func main() {
 	cmd.Execute()

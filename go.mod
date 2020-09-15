@@ -1,4 +1,4 @@
-module github.com/mkizka/ppath
+module github.com/mkizka/pathtab
 
 go 1.13
 
