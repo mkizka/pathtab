@@ -27,9 +27,9 @@ var rootCmd = &cobra.Command{
 	Short: "CLI Tool for Editing PATH Environment Variable",
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
-            cmd.Help()
-            os.Exit(0)
-        }
+			cmd.Help()
+			os.Exit(0)
+		}
 	},
 }
 
