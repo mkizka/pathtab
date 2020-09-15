@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"io/ioutil"
 )
 
 func getConfPath() string {
@@ -22,4 +23,13 @@ func getConfFile() *os.File {
 	}
 	defer file.Close()
 	return file
+}
+
+func getConfData() string {
+	filePath := getConfPath()
+	data, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return string(data)
 }
