@@ -19,25 +19,31 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"os"
+	"runtime"
+	"sort"
+	"strings"
 )
 
-// rootCmd represents the base command when called without any subcommands
-var rootCmd = &cobra.Command{
-	Use:   "pathtab",
-	Short: "CLI Tool for Editing PATH Environment Variable",
+var shouldSort bool
+
+// listCmd represents the list command
+var listCmd = &cobra.Command{
+	Use:   "list",
+	Short: "Show list of PATH environment variable",
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) == 0 {
-            cmd.Help()
-            os.Exit(0)
-        }
+		splitter := ":"
+		if runtime.GOOS == "windows" {
+			splitter = ";"
+		}
+		paths := strings.Split(os.Getenv("PATH"), splitter)
+		if shouldSort {
+			sort.Strings(paths)
+		}
+		fmt.Println(strings.Join(paths, "\n"))
 	},
 }
 
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
-func Execute() {
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+func init() {
+	rootCmd.AddCommand(listCmd)
+	listCmd.Flags().BoolP("sort", "s", false, "sort result")
 }
