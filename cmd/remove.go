@@ -21,24 +21,24 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// addCmd represents the add command
-var addCmd = &cobra.Command{
-	Use:   "add PATH",
-	Short: "Add value to ~/.pathtab",
-	Args:  cobra.ExactArgs(1),
+// removeCmd represents the remove command
+var removeCmd = &cobra.Command{
+	Use:   "remove PATH",
+	Short: "Remove value from ~/.pathtab",
 	Run: func(cmd *cobra.Command, args []string) {
 		conf := readConf()
+		newConfSlice := []string{}
 		newPath := args[0]
 		for _, path := range strings.Split(conf, "\n") {
-			if path == newPath {
-				return
+			if path != newPath {
+				newConfSlice = append(newConfSlice, path)
 			}
 		}
-		conf += args[0] + "\n"
-		writeConf(conf)
+		newConf := strings.Join(newConfSlice, "\n")
+		writeConf(newConf)
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(addCmd)
+	rootCmd.AddCommand(removeCmd)
 }
