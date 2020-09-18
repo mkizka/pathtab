@@ -16,6 +16,8 @@ limitations under the License.
 package cmd
 
 import (
+	"strings"
+
 	"github.com/spf13/cobra"
 )
 
@@ -25,8 +27,15 @@ var addCmd = &cobra.Command{
 	Short: "Add value to PATH",
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		file := getConfFile()
-		file.WriteString(args[0])
+		conf := readConf()
+		newPath := args[0]
+		for _, path := range strings.Split(conf, "\n") {
+			if path == newPath {
+				return
+			}
+		}
+		conf += args[0] + "\n"
+		writeConf(conf)
 	},
 }
 

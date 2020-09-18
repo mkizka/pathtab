@@ -1,10 +1,10 @@
 package cmd
 
 import (
+	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
-	"io/ioutil"
 )
 
 func getConfPath() string {
@@ -15,21 +15,17 @@ func getConfPath() string {
 	return filepath.Join(homeDir, ".pathtab")
 }
 
-func getConfFile() *os.File {
+func writeConf(text string) {
 	filePath := getConfPath()
-	file, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0666)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
-	return file
+	data := []byte(text)
+	ioutil.WriteFile(filePath, data, 0644)
 }
 
-func getConfData() string {
+func readConf() string {
 	filePath := getConfPath()
 	data, err := ioutil.ReadFile(filePath)
 	if err != nil {
-		log.Fatal(err)
+		data = []byte("")
 	}
 	return string(data)
 }
