@@ -17,33 +17,45 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"os"
 	"runtime"
 	"sort"
 	"strings"
+
+	"github.com/spf13/cobra"
 )
 
+var shouldAll bool
 var shouldSort bool
+
+func getPATH(isSystem bool) []string {
+	if isSystem {
+		splitter := ":"
+		if runtime.GOOS == "windows" {
+			splitter = ";"
+		}
+		return strings.Split(os.Getenv("PATH"), splitter)
+	}
+	conf := readConf()
+	trimedConf := strings.TrimSpace(conf)
+	return strings.Split(trimedConf, "\n")
+}
 
 // listCmd represents the list command
 var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "Show list of PATH environment variable",
 	Run: func(cmd *cobra.Command, args []string) {
-		splitter := ":"
-		if runtime.GOOS == "windows" {
-			splitter = ";"
-		}
-		paths := strings.Split(os.Getenv("PATH"), splitter)
+		path := getPATH(shouldAll)
 		if shouldSort {
-			sort.Strings(paths)
+			sort.Strings(path)
 		}
-		fmt.Println(strings.Join(paths, "\n"))
+		fmt.Println(strings.Join(path, "\n"))
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(listCmd)
-	listCmd.Flags().BoolP("sort", "s", false, "sort result")
+	listCmd.Flags().BoolVarP(&shouldAll, "all", "a", false, "show all PATH")
+	listCmd.Flags().BoolVarP(&shouldSort, "sort", "s", false, "sort result")
 }
