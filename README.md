@@ -1,4 +1,4 @@
-# ppath
+# pathtab
 PATH環境変数を編集するCLIツール  
 
 ## Install
